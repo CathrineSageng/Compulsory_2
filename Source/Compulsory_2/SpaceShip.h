@@ -13,6 +13,7 @@ class UStaticMesh;
 class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UBoxComponent;
 
 //class FInputActionValue;
 
@@ -38,9 +39,6 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
-	UStaticMeshComponent* StaticMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
 	USkeletalMeshComponent* SpaceShip;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
@@ -52,6 +50,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
 	TSubclassOf<AAmmo> BP_Ammo;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	UBoxComponent* Collider;
+
+	// Code from sessions with Meisam
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = InputSystem)
 	class UInputMappingContext* MainInput;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = InputSystem)
@@ -63,6 +65,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = InputSystem)
 	class UInputAction* IA_Restart;
 
+	// Code from sessions with Meisam
 	UFUNCTION(BlueprintCallable, Category = Functions)
 	void RightLeft(const FInputActionValue& val);
 
@@ -75,11 +78,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Functions)
 	void Restart(const FInputActionValue& val);
 
+	void HitByAlienShip();
+
 	float speed;
 	float input;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "My Variables")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
 	int ammo;
 
-	void Fire();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	int MaxAmmo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category =Variables)
+	int Lives;
+
+	
 };

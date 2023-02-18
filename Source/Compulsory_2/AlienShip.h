@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "AlienShip.generated.h"
 
+class UBoxComponent;
+
 UCLASS()
 class COMPULSORY_2_API AAlienShip : public AActor
 {
@@ -23,4 +25,30 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	UBoxComponent* Collider{ nullptr };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	USkeletalMeshComponent* AlienShip;
+
+
+	UFUNCTION()
+	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+					UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex,
+					bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void DestroyTarget();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	float MovementSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	float RotationSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
+	float XKillPosition;
 };

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SpaceShip.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
@@ -13,12 +14,14 @@ ASpaceShip::ASpaceShip()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	SetRootComponent(StaticMesh);
+	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
+	Collider->InitBoxExtent(FVector(500, 500, 200));
+	Collider->SetRelativeLocation(FVector(0, 0, 0));
+	SetRootComponent(Collider);
 
 	SpaceShip = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SpaceShip"));
-	SpaceShip->SetupAttachment(GetRootComponent());
 	SpaceShip->SetRelativeLocation(FVector(0, 0, 0));
+	SpaceShip->SetupAttachment(GetRootComponent());
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
@@ -35,6 +38,8 @@ ASpaceShip::ASpaceShip()
 	speed = 50;
 	input = 0;
 	ammo = 20;
+	MaxAmmo = 30;
+	Lives = 5;
 }
 
 // Called when the game starts or when spawned
@@ -42,6 +47,7 @@ void ASpaceShip::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Code from sessions with Meisam
 	APlayerController* PlayerController = Cast<APlayerController>(Controller);
 	if (PlayerController)
 	{
@@ -58,7 +64,7 @@ void ASpaceShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetActorLocation(GetActorLocation() + FVector(0, input * speed, 0));
+	SetActorLocation(GetActorLocation() + FVector(0, input * speed, 0), true);
 	
 }
 
@@ -67,6 +73,7 @@ void ASpaceShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Code from sessions with Meisam
 	if (UEnhancedInputComponent* EnhanceInputCom = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhanceInputCom->BindAction(IA_RightLeft, ETriggerEvent::Started, this, &ASpaceShip::RightLeft);
@@ -83,9 +90,16 @@ void ASpaceShip::RightLeft(const FInputActionValue& val)
 	input = val.GetMagnitude();
 }
 
+//Code from afternoon sessions with Alexander 
 void ASpaceShip::Shoot(const FInputActionValue& val)
 {
-	Fire();
+	if (ammo > 0)
+	{
+		ammo--;
+
+		GetWorld()->SpawnActor<AActor>(BP_Ammo, GetActorLocation()
+			+ FVector(30.f, 0.f, 70.f), GetActorRotation());
+	}
 }
 
 void ASpaceShip::Reload(const FInputActionValue& val)
@@ -96,15 +110,16 @@ void ASpaceShip::Restart(const FInputActionValue& val)
 {
 }
 
-void ASpaceShip::Fire()
-{
-	if (ammo > 0)
-	{
-		ammo--;
 
-		GetWorld()->SpawnActor<AActor>(BP_Ammo, GetActorLocation()
-			+ FVector(30.f, 0.f, 70.f), GetActorRotation());
+void ASpaceShip::HitByAlienShip()
+{
+	Lives--;
+	if (Lives <= 0)
+	{
+		//To do game over 
 	}
 }
+
+
 
 

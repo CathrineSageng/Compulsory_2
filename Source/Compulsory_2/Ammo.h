@@ -6,7 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Ammo.generated.h"
 
-class USphereComponent;
+//class USphereComponent;
+class UBoxComponent;
 
 UCLASS()
 class COMPULSORY_2_API AAmmo : public AActor
@@ -26,7 +27,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
-	USphereComponent* Collider;
+	UBoxComponent* Collider;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variables)
 	UStaticMeshComponent* StaticMesh;
